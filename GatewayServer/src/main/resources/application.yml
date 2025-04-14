@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: catalog
+          uri: lb://catalog:8081
+#          filters:
+#            - StripPrefix=1
+          predicates:
+            - Path=/catalog/**
+#        - id: user
+#          uri: http://localhost:8082
+#          predicates:
+#            - Path:=/user/**
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    fetch-registry: false
