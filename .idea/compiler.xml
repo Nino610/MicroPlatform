@@ -8,8 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gateway-server" />
+        <module name="eurekaServer" />
       </profile>
-      <profile name="Annotation profile for microservices System" enabled="true">
+      <profile name="Annotation profile for security" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -21,7 +22,8 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="eureka-server" target="20" />
-      <module name="eurekaServer" target="20" />
+      <module name="EurekaServer" target="1.8" />
+      <module name="micro-platform" target="1.5" />
       <module name="MicroPlatform" target="1.5" />
     </bytecodeTargetLevel>
   </component>
