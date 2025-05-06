@@ -1,6 +1,8 @@
 package com.elnino.security.configure;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh"
+            "/auth/token", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh", "/auth/test"
     };
 
     @Autowired
@@ -41,8 +43,8 @@ public class SecurityConfig {
                 .authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                .decoder(customJwtDecoder)
+                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
 //                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
@@ -73,7 +75,12 @@ public class SecurityConfig {
 
         return jwtAuthenticationConverter;
     }
-//    test fix dữ liệu
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+    //    test fix dữ liệu
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         UserDetails user = User.builder()
