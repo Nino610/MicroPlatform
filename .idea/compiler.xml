@@ -7,7 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="eurekaServer" />
         <module name="gateway-server" />
       </profile>
       <profile name="Annotation profile for microservices System" enabled="true">
@@ -22,11 +21,13 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="eureka-server" target="20" />
+      <module name="eurekaServer" target="20" />
       <module name="MicroPlatform" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="EurekaServer" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="eurekaServer" options="-parameters" />
       <module name="gateway-server" options="-parameters" />
