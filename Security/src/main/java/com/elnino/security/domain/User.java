@@ -18,6 +18,21 @@ public class User {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "age")
+    private Long age;
+
+    @Column(name = "sex")
+    private String sex;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    private String role;
+
     public Long getId() {
         return id;
     }
@@ -66,16 +81,6 @@ public class User {
         this.password = password;
     }
 
-    @Column(name = "age")
-    private Long age;
 
-    @Column(name = "sex")
-    private String sex;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "password")
-    private String password;
 
 }
