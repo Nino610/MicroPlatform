@@ -33,8 +33,7 @@ public class UserServiceImpl implements UserService {
             throw new ApplicationContextException("Đã có user tồn tại");
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        dto.setRole(Role.USER.name());
+//        dto.setRole(Role.USER.name());
         return userRepository.save(userMapper.dtoConvert(dto));
     }
 }
-//nhớ sửa thêm cấu hình dataSource DB thì mới hết lỗi bean UserRepo

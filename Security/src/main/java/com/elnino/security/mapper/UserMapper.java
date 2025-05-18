@@ -2,8 +2,13 @@ package com.elnino.security.mapper;
 
 import com.elnino.security.domain.User;
 import com.elnino.security.dto.UserDto;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserMapper {
-    public User dtoConvert(UserDto dto)
+    public  User dtoConvert(UserDto dto)
     {
         User user = new User();
         user.setId(dto.getId());
@@ -11,7 +16,8 @@ public class UserMapper {
         user.setSex(dto.getSex());
         user.setAge(dto.getAge());
         user.setAddress(dto.getAddress());
-//        dto.setRoles(user.getRole());
+        user.setPassword(dto.getPassword());
+        user.setRole(dto.getRole());
         return user;
     }
 }
