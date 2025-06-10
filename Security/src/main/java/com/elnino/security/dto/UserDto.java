@@ -3,6 +3,7 @@ package com.elnino.security.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,5 +16,5 @@ public class UserDto {
     private String address;
     private String userName;
     private String password;
-    private String role;
+    private Role roles;
 }

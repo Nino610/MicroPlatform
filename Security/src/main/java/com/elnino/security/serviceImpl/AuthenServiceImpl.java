@@ -42,10 +42,7 @@ public class AuthenServiceImpl implements AuthenService {
     private AuthenticationManager authenticationManager;
     public AuthenticationResponse authentication(AuthenticationRequest request) throws JOSEException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//        var user = userService.loadByUserName(request.getUsername());
-        var user = new User();
-        user.setName("user");
-        user.setPassword(passwordEncoder.encode("pass")); // phải mã hóa
+        User user = userService.loadByUserName(request.getUsername());
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated) throw new ApplicationContextException("UNANUTHENTICATED");
         var token = jwtTokenProvider.generateToken(user);

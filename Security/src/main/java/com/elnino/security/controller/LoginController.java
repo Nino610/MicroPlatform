@@ -8,7 +8,9 @@ import com.elnino.security.service.AuthenService;
 import com.elnino.security.service.UserService;
 import com.nimbusds.jose.JOSEException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -40,4 +42,23 @@ public class LoginController {
     public String test(){
         return "hello world";
     }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')") // Role từ JWT hoặc DB
+    public String adminOnly() {
+        return "Admin content";
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("@securityService.checkUserPermission(authentication, #userId)")
+    public String userProfile(@RequestParam String userId) {
+        return "Profile: " + userId;
+    }
+
+
+    // Sample để cache dữ liệu (cần cấu hình thêm dùng tool nào, phải search gpt)
+//    @Cacheable(value = "userRoles", key = "#username")
+//    public User getUserWithRoles(String username) {
+//        return userRepository.findByUsernameWithRoles(username);
+//    }
 }

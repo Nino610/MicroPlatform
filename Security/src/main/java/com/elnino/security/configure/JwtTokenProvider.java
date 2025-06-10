@@ -1,6 +1,7 @@
 package com.elnino.security.configure;
 
 import com.elnino.security.domain.User;
+import com.elnino.security.dto.Role;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Component
 public class JwtTokenProvider {
     private final String JWT_SECRET = "elnino";
@@ -17,6 +20,7 @@ public class JwtTokenProvider {
     protected String SIGNER_KEY;
     public String generateToken(User user) throws JOSEException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        Role roles = user.getRoles();
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getName())
                 .issuer("elnino")
@@ -24,6 +28,7 @@ public class JwtTokenProvider {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .claim("roles", roles)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject object = new JWSObject(header,payload);

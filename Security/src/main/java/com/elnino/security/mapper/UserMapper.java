@@ -17,7 +17,7 @@ public class UserMapper {
         user.setAge(dto.getAge());
         user.setAddress(dto.getAddress());
         user.setPassword(dto.getPassword());
-        user.setRole(dto.getRole());
+        user.setRoles(dto.getRoles());
         return user;
     }
 }

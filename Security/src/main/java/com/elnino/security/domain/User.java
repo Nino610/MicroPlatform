@@ -1,9 +1,13 @@
 package com.elnino.security.domain;
 
+import com.elnino.security.dto.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -30,8 +34,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "roles")
+    @Enumerated(EnumType.STRING)
+    private Role roles;
 
     public Long getId() {
         return id;
