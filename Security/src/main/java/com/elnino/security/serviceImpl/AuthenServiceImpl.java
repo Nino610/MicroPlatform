@@ -3,6 +3,7 @@ package com.elnino.security.serviceImpl;
 import com.elnino.security.dto.AuthenticationRequest;
 import com.elnino.security.dto.AuthenticationResponse;
 import com.elnino.security.domain.User;
+import com.elnino.security.mapper.UserMapper;
 import com.elnino.security.service.AuthenService;
 import com.elnino.security.configure.JwtTokenProvider;
 import com.elnino.security.service.UserService;
@@ -39,13 +40,15 @@ public class AuthenServiceImpl implements AuthenService {
 
     private final UserService userService;
 
+    private final UserMapper mapper;
+
     private AuthenticationManager authenticationManager;
     public AuthenticationResponse authentication(AuthenticationRequest request) throws JOSEException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         User user = userService.loadByUserName(request.getUsername());
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated) throw new ApplicationContextException("UNANUTHENTICATED");
-        var token = jwtTokenProvider.generateToken(user);
+        var token = jwtTokenProvider.generateToken(mapper.convertEntity(user));
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 
