@@ -1,6 +1,5 @@
 package com.elnino.security.configure;
 
-import com.elnino.security.domain.User;
 import com.elnino.security.dto.Role;
 import com.elnino.security.dto.UserDto;
 import com.nimbusds.jose.*;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
-    private final String JWT_SECRET = "elnino";
+//    private final String JWT_SECRET = "elnino";
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
     public String generateToken(UserDto userDto) throws JOSEException {

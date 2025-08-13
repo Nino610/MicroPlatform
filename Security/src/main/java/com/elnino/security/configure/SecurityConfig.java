@@ -62,7 +62,6 @@ public class SecurityConfig {
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                 .decoder(customJwtDecoder)
                 .jwtAuthenticationConverter(jwtAuthenticationConverter())));
-//                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
@@ -120,16 +119,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-//    @Bean
-//    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-//        UserDetails user = User.builder()
-//                .username("admin")
-//                .password(encoder.encode("123456"))
-//                .roles("ADMIN")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {

@@ -13,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -33,7 +37,20 @@ public class UserServiceImpl implements UserService {
             throw new ApplicationContextException("Đã có user tồn tại");
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        HashSet<Role> roles = new HashSet<>();
+        dto.getRoles().forEach(role -> {
+            roles.add(role);
+        });
 //        dto.setRole(Role.USER.name());
         return userRepository.save(userMapper.dtoConvert(dto));
+    }
+    @Override
+    public List<UserDto> loadAllUser(){
+        List<UserDto> lstUserDto = userRepository.findAll().stream().map(userMapper::convertEntity).toList();
+        return lstUserDto;
+    }
+    @Override
+    public void deleteUser(Long id){
+        userRepository.deleteById(id);
     }
 }

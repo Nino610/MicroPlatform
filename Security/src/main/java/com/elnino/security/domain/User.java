@@ -11,8 +11,6 @@ import java.util.Set;
 
 @Data
 @Entity
-@Getter
-@Setter
 @Table(name = "user")
 public class User {
     @Id

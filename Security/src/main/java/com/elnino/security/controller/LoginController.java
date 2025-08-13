@@ -43,12 +43,6 @@ public class LoginController {
         return "hello world";
     }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')") // Role từ JWT hoặc DB
-    public String adminOnly() {
-        return "Admin content";
-    }
-
     @GetMapping("/profile")
     @PreAuthorize("@securityService.checkUserPermission(authentication, #userId)")
     public String userProfile(@RequestParam String userId) {
