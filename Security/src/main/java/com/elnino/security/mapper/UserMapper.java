@@ -21,7 +21,7 @@ public class UserMapper {
         user.setAge(dto.getAge());
         user.setAddress(dto.getAddress());
         user.setPassword(dto.getPassword());
-        user.setRoles(setToRole(dto.getRoles()));
+//        user.setRoles(setToRole(dto.getRoles()));
         return user;
     }
 
@@ -33,7 +33,7 @@ public class UserMapper {
         dto.setAge(user.getAge());
         dto.setAddress(user.getAddress());
         dto.setPassword(user.getPassword());
-        dto.setRoles(convertRoleToSet(user.getRoles()));
+//        dto.setRoles(convertRoleToSet(user.getRoles()));
         return dto;
     }
     private Role setToRole(Set<Role> roles) {

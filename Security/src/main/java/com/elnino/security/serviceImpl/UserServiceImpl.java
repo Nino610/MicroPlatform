@@ -38,9 +38,9 @@ public class UserServiceImpl implements UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         HashSet<Role> roles = new HashSet<>();
-        dto.getRoles().forEach(role -> {
-            roles.add(role);
-        });
+//        dto.getRoles().forEach(role -> {
+//            roles.add(role);
+//        });
 //        dto.setRole(Role.USER.name());
         return userRepository.save(userMapper.dtoConvert(dto));
     }

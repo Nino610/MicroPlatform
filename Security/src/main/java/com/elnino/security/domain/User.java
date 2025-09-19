@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,9 +33,15 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "roles")
-    @Enumerated(EnumType.STRING)
-    private Role roles;
+    @ManyToMany(fetch = FetchType.LAZY) // Dùng LAZY để tối ưu
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Roles> roles = new HashSet<>();
+
+//    @Column(name = "roles")
+//    @Enumerated(EnumType.STRING)
+//    private Role roles;
 
     public Long getId() {
         return id;

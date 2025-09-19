@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Role từ JWT hoặc DB
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Role từ JWT hoặc DB - role là USER hay ADDMIN đều truy cập dược
     public String userOnly() {
         return "user content";
     }

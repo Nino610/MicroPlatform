@@ -2,6 +2,7 @@ package com.elnino.security.configure;
 
 //import com.elnino.security.repository.UserRepository;
 import com.elnino.security.domain.User;
+import com.elnino.security.dto.Role;
 import com.elnino.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -32,9 +33,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -49,13 +48,17 @@ public class SecurityConfig {
     private CustomJwtDecoder customJwtDecoder;
 
 //    @Autowired
-//    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated());
 
@@ -87,6 +90,7 @@ public class SecurityConfig {
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // Bỏ tiền tố "SCOPE_" hoặc "ROLE_"
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); //Claim chứa roles trong JWT
 
+        //Authen dùng jwt kết hợp DB
 //        Converter<Jwt, Collection<GrantedAuthority>> hybridConverter = jwt -> {
 //            // Lấy roles từ JWT
 //            Collection<GrantedAuthority> jwtAuthorities = jwtGrantedAuthoritiesConverter.convert(jwt);
@@ -96,8 +100,12 @@ public class SecurityConfig {
 //            User user = userRepository.findUserByName(username);
 //
 //            // Chuyển đổi roles từ DB thành GrantedAuthority
-//            Collection<GrantedAuthority> dbAuthorities = user.getRoles().stream()
-//                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // Thêm tiền tố ROLE_
+//            Collection<GrantedAuthority> dbAuthorities = user.getRoles().describeConstable().stream()
+//                    .map(role ->
+//                    {
+//                        System.out.println("ROLE_"+role);
+//                        return new SimpleGrantedAuthority("ROLE_" + role);
+//                    }) // Thêm tiền tố ROLE_
 //                    .collect(Collectors.toList());
 //
 //            // Merge roles từ JWT và DB (loại bỏ trùng lặp)
@@ -108,9 +116,19 @@ public class SecurityConfig {
 //            return combinedAuthorities;
 //        };
 
+        //Authen dùng DB
+        Converter<Jwt, Collection<GrantedAuthority>> dbConverter = jwt -> {
+            String username = jwt.getSubject();
+            List<String> roles = userRepository.findRoleNamesByUsername(username);
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+
+            return authorities;
+        };
         // 3. Thiết lập converter tùy chỉnh vào JwtAuthenticationConverter
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(dbConverter);
 
         return jwtAuthenticationConverter;
     }

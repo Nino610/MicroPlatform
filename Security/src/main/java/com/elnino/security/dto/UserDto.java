@@ -14,5 +14,5 @@ public class UserDto {
     private String address;
     private String userName;
     private String password;
-    private Set<Role> roles;
+    private List<String> roles;
 }
