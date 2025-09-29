@@ -43,12 +43,6 @@ public class LoginController {
         return "hello world";
     }
 
-    @GetMapping("/profile")
-    @PreAuthorize("@securityService.checkUserPermission(authentication, #userId)")
-    public String userProfile(@RequestParam String userId) {
-        return "Profile: " + userId;
-    }
-
 
     // Sample để cache dữ liệu (cần cấu hình thêm dùng tool nào, phải search gpt)
 //    @Cacheable(value = "userRoles", key = "#username")

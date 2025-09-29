@@ -4,10 +4,12 @@ package com.elnino.security.configure;
 import com.elnino.security.domain.User;
 import com.elnino.security.dto.Role;
 import com.elnino.security.repository.UserRepository;
+import com.nimbusds.jose.shaded.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/auth/token", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh"
@@ -58,7 +61,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
-                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/user/**").hasAnyAuthority("ADMIN","USER") // khi truy cập vào user thì ai cũng có quyền
+                .requestMatchers("/admin/**").hasAuthority("ADMIN") //chỉ khi truy cập vào admin mới cần quyền ADMIN
                 .anyRequest()
                 .authenticated());
 
@@ -87,7 +91,7 @@ public class SecurityConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // Bỏ tiền tố "SCOPE_" hoặc "ROLE_"
+//        jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // Bỏ tiền tố "SCOPE_" hoặc "ROLE_"
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles"); //Claim chứa roles trong JWT
 
         //Authen dùng jwt kết hợp DB
@@ -118,16 +122,16 @@ public class SecurityConfig {
 
         //Authen dùng DB
         Converter<Jwt, Collection<GrantedAuthority>> dbConverter = jwt -> {
-            String username = jwt.getSubject();
-            List<String> roles = userRepository.findRoleNamesByUsername(username);
+            List<String> roles = jwt.getClaimAsStringList("roles");
+            List<String> permissions = jwt.getClaimAsStringList("permissions");
             List<GrantedAuthority> authorities = new ArrayList<>();
-            roles.forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+            roles.forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+            permissions.forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission)));
 
             return authorities;
         };
         // 3. Thiết lập converter tùy chỉnh vào JwtAuthenticationConverter
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-//        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(dbConverter);
 
         return jwtAuthenticationConverter;

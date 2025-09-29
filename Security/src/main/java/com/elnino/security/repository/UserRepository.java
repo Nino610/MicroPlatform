@@ -13,11 +13,15 @@ import java.util.Optional;
 
 //@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findUserByName(String name);
+    User findUserByUserName(String name);
 
     Boolean existsUserByName(String name);
 
     @Query("SELECT r.type FROM User u JOIN u.roles r WHERE u.name = :username")
     List<String> findRoleNamesByUsername(@Param("username") String username);
+
+    @Query("select p.name from User u join u.roles r join r.permissions p where u.name = :userName")
+    List<String> findPermissionByUserName(@Param("userName")String userName);
+
 
 }

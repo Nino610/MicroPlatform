@@ -26,18 +26,19 @@ public class JwtTokenProvider {
 
     public String generateToken(UserDto userDto) throws JOSEException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-//        Set<Role> roles = userDto.getRoles();
-//        List<String> roleNames = roles.stream().map(Role::name).map(r -> "ROLE_" + r) // để Spring Security hiểu
-//                .collect(Collectors.toList());
-        List<String> roleNames = userRepository.findRoleNamesByUsername(userDto.getName());
+//        List<String> roleNames = userRepository.findRoleNamesByUsername(userDto.getName());
+//        List<String> permissionNames = userRepository.findPermissionByUserName(userDto.getName());
+//        userDto.setRoles(roleNames);
+//        userDto.setPermissions(permissionNames);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(userDto.getName())
                 .issuer("elnino")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("roles", roleNames)
+                .claim("Info User", userDto)
+                .claim("roles", userDto.getRoles())
+                .claim("permissions", userDto.getPermissions())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject object = new JWSObject(header,payload);

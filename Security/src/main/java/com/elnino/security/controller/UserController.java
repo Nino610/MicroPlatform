@@ -25,14 +25,23 @@ public class UserController {
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')") // Role từ JWT hoặc DB
+    @PreAuthorize("hasAuthority('ADMIN')") // Role từ JWT hoặc DB
+//    @PreAuthorize("hasRole('ADMIN')") // Role từ JWT hoặc DB phải thêm tiền tố ROLE_
     public String adminOnly() {
         return "Admin content";
     }
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") // Role từ JWT hoặc DB - role là USER hay ADDMIN đều truy cập dược
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')") // Role từ JWT hoặc DB - role là USER hay ADMIN đều truy cập dược
+//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')") //? Role từ JWT hoặc DB - role là USER hay ADMIN đều truy cập, dược phải thêm tiền tố ROLE_
     public String userOnly() {
         return "user content";
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("@userServiceImpl.checkUserPermission(authentication, #userId)")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+    public String userProfile(@RequestParam String userId) {
+        return "Profile: " + userId;
     }
 }

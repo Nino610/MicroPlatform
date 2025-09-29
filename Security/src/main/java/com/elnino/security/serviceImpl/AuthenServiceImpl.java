@@ -42,7 +42,6 @@ public class AuthenServiceImpl implements AuthenService {
 
     private final UserMapper mapper;
 
-    private AuthenticationManager authenticationManager;
     public AuthenticationResponse authentication(AuthenticationRequest request) throws JOSEException {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         User user = userService.loadByUserName(request.getUsername());
